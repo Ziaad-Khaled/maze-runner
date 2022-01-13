@@ -4,6 +4,7 @@
 #include <glut.h>
 #include <iostream>
 #include <random>
+using namespace std;
 
 
 int WIDTH = 1280;
@@ -129,6 +130,10 @@ Model_3DS model_tree;
 
 // Textures
 GLTexture tex_ground;
+GLTexture tex_coin;
+GLTexture tex_wall;
+GLTexture tex_rock;
+
 
 //=======================================================================
 // Lighting Configuration Function
@@ -254,10 +259,13 @@ void RenderGround()
 
 void drawMazes()
 {
+	glPushMatrix();
 
 	
 
 	int flip = 0;
+	//glBindTexture(GL_TEXTURE_2D, tex_ground.texture[0]);
+
 	if (maze0)
 	{
 		for (int i = 0; i < 20; i++) {
@@ -265,6 +273,7 @@ void drawMazes()
 				if (maze1[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
 					glTranslatef(3 + j * 1, 0, i * 1);
+					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
 				}
@@ -272,13 +281,17 @@ void drawMazes()
 				{
 					flip++;
 
-					if (flip % 10 == 0)
+					if (flip % 10 == 0) //coin
 					{
+						glPushMatrix();
 						glPushMatrix();
 						glTranslatef(3 + j * 1, 0, i * 1);//10 + just for positioning
 						glutSolidSphere(0.2, 200, 200);
+				//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
+						glPopMatrix();
 						glPopMatrix();
 					}
+
 				}
 			}
 		}
@@ -291,6 +304,7 @@ void drawMazes()
 				if (maze2[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
 					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
 				}
@@ -298,16 +312,28 @@ void drawMazes()
 				{
 					flip++;
 
-					if (flip % 10 == 0)
+					if (flip % 10 == 0) //coin
 					{
 						glPushMatrix();
-						glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+						glTranslatef(j * 1 - 18, 0.1, i * 1 - 18);
+						glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 						glutSolidSphere(0.2, 200, 200);
+						glPopMatrix();
+					}
+					if (flip % 10 == 8) //obstalce
+					{
+						glPushMatrix();
+						glTranslatef(j * 1 - 18, 0.1, i * 1 - 18);
+						glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
+						glRotatef(-90, 1, 0, 0);
+						glutSolidCone(0.3, 0.3, 200, 200);
+						//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 						glPopMatrix();
 					}
 				}
 			}
 		}
+		glPopMatrix();
 	}
 	
 }
@@ -478,6 +504,9 @@ void LoadAssets()
 	// Loading texture files
 	tex_ground.Load("Textures/ground.bmp");
 	loadBMP(&tex, "Textures/blu-sky-3.bmp", true);
+	tex_coin.Load("Textures/coin.bmp");
+	tex_wall.Load("Textures/wall2.bmp");
+	tex_rock.Load("Textures/rock.bmp");
 }
 
 //=======================================================================
