@@ -19,6 +19,8 @@ GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = false;
+//0:empty space 1:wall 2:coin 3:obstacle
+int position=0;
 int maze1[20][16] =
 {
 	{ 1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1 },
@@ -116,10 +118,10 @@ public:
 		z += value;
 	}
 };
-
-Vector Eye(20, 5, 20);
-Vector At(0, 0, 0);
-Vector Up(0, 1, 0);
+//don't play with the intial values before telling ziad!!!!!
+Vector Eye(-9, 1, 20);
+Vector At(-9, 0, 10);
+Vector Up(0, 2, 0);
 
 int cameraZoom = 0;
 
@@ -260,7 +262,8 @@ void RenderGround()
 void drawMazes()
 {
 	glPushMatrix();
-
+	glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+	glEnable(GL_TEXTURE_GEN_T);
 	
 
 	int flip = 0;
@@ -307,6 +310,11 @@ void drawMazes()
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 1, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
+					glutSolidCube(1);
+					glPopMatrix();
 				}
 				else
 				{
@@ -314,25 +322,29 @@ void drawMazes()
 
 					if (flip % 10 == 0) //coin
 					{
+						maze2[i][j] << 2;
 						glPushMatrix();
-						glTranslatef(j * 1 - 18, 0.1, i * 1 - 18);
+						glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
 						glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
-						glutSolidSphere(0.2, 200, 200);
+						glutSolidSphere(0.1, 200, 200);
 						glPopMatrix();
 					}
 					if (flip % 10 == 8) //obstalce
 					{
+						maze2[i][j] << 3;
 						glPushMatrix();
-						glTranslatef(j * 1 - 18, 0.1, i * 1 - 18);
+						glTranslatef(j * 1 - 18, 0, i * 1 - 18);
 						glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
 						glRotatef(-90, 1, 0, 0);
-						glutSolidCone(0.3, 0.3, 200, 200);
+						glutSolidCone(0.1, 0.2, 200, 200);
 						//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 						glPopMatrix();
 					}
 				}
 			}
 		}
+		glDisable(GL_TEXTURE_GEN_S); 
+		glDisable(GL_TEXTURE_GEN_T);
 		glPopMatrix();
 	}
 	
@@ -505,7 +517,7 @@ void LoadAssets()
 	tex_ground.Load("Textures/ground.bmp");
 	loadBMP(&tex, "Textures/blu-sky-3.bmp", true);
 	tex_coin.Load("Textures/coin.bmp");
-	tex_wall.Load("Textures/wall2.bmp");
+	tex_wall.Load("Textures/wall.bmp");
 	tex_rock.Load("Textures/rock.bmp");
 }
 
@@ -519,28 +531,81 @@ void Anim() {
 }
 
 void key(int key, int mx, int my) {
+	float oldEyeX = Eye.x;
+	float oldAtX = At.x;
+	float oldEyeZ = Eye.z;
+	float oldAtZ = At.z;
 	
 	if (key == GLUT_KEY_LEFT) {
-		At.z++;
-		//Eye.z++;
+		Eye.x--;
+		At.x--;
 	}
 	if (key == GLUT_KEY_RIGHT) {
-		At.z--;
-		//Eye.z++;
+		Eye.x++;
+		At.x++;
 	}
 	if (key == GLUT_KEY_DOWN) {
-		Eye.x++;	
-		At.x++;
+		Eye.z++;
+		At.z++;
 
 	}
 	if (key == GLUT_KEY_UP) {
-		Eye.y++;
-		//At.y++;
+		Eye.z--;
+		At.z--;
+		//Eye.z++;
 	}
+	//erfa3 el camera l fo2
+	//At.z--;
+	cout << "X: ";
+	cout << Eye.x;
+	cout << "\n";
+	cout << "Z: ";
+	cout << Eye.z;
+	cout << "\n";
 
-	
+	int positionXMaze;
+	int positionYMaze;
+
+		if (maze0)
+		{
+		
+		}
+		else
+		{
+			positionYMaze = (int)Eye.x + 20;
+			positionXMaze = ((int)-Eye.z) + 11;
+			cout << "positionXMaze: ";
+			cout << positionXMaze;
+			cout << "\n";
+			cout << "positionYMaze: ";
+			cout << positionYMaze;
+			cout << "\n";
+			if (positionYMaze < 0 || positionXMaze < 0)
+				position = 0;
+			else
+			{
+				position = maze2[positionXMaze][positionYMaze];
+			}
+		}
+		cout << "Position: ";
+		cout << position;
+		cout << "\n";
+		if (position == 1)
+		{
+			//in a wall
+			Eye.x = oldEyeX;
+			At.x = oldAtX;
+			Eye.z = oldEyeZ;
+			At.z = oldAtZ;
+			//make sound of can't go to a wall 
+		}
 
 	glutPostRedisplay();
+}
+
+void handlerFunc(int x, int y)
+{
+	/* code to handle mouse position deltas */
 }
 void main(int argc, char** argv)
 
@@ -562,7 +627,7 @@ void main(int argc, char** argv)
 	//glutKeyboardFunc(myKeyboard);
 
 	//glutMotionFunc(myMotion);
-
+	//glutPassiveMotionFunc(handlerFunc);
 	//glutMouseFunc(myMouse);
 
 	//glutReshapeFunc(myReshape);
