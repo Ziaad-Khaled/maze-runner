@@ -4,6 +4,13 @@
 #include <glut.h>
 #include <iostream>
 #include <random>
+#include <stdlib.h> 
+#include <stdio.h>
+#include <time.h>
+#include <dos.h>
+#include <windows.h>
+#include <future>
+
 using namespace std;
 
 
@@ -19,6 +26,7 @@ GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = false;
+
 //0:empty space 1:wall 2:coin 3:obstacle
 int position=0;
 int maze1[20][16] =
@@ -411,12 +419,32 @@ void myDisplay(void)
 
 	glutSwapBuffers();
 }
-
+void jump(void)
+{
+	cout << "heree";
+	for (int i = 0;i < 7;i++)
+	{
+		Eye.y += 0.1;
+		At.y += 0.1;
+		myDisplay();
+		cout << "heree";
+	}
+	Eye.y -= 0.1;
+	At.y -= 0.1;
+	myDisplay();
+	for (int i = 0;i < 3;i++)
+	{
+		Eye.y -= 0.2;
+		At.y -= 0.2;
+		myDisplay();
+	}
+}
 //=======================================================================
 // Keyboard Function
 //=======================================================================
 void myKeyboard(unsigned char button, int x, int y)
-{
+{	
+	std::future<void> result_future;
 	switch (button)
 	{
 	case 'w':
@@ -424,6 +452,9 @@ void myKeyboard(unsigned char button, int x, int y)
 		break;
 	case 'r':
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	case ' ':
+		jump();
 		break;
 	case 27:
 		exit(0);
@@ -434,6 +465,7 @@ void myKeyboard(unsigned char button, int x, int y)
 
 	glutPostRedisplay();
 }
+
 
 //=======================================================================
 // Motion Function
@@ -552,7 +584,7 @@ void key(int key, int mx, int my) {
 	if (key == GLUT_KEY_UP) {
 		Eye.z--;
 		At.z--;
-		//Eye.z++;
+
 	}
 	//erfa3 el camera l fo2
 	//At.z--;
@@ -624,7 +656,7 @@ void main(int argc, char** argv)
 	glutDisplayFunc(myDisplay);
 	glutSpecialFunc(key);
 
-	//glutKeyboardFunc(myKeyboard);
+	glutKeyboardFunc(myKeyboard);
 
 	//glutMotionFunc(myMotion);
 	//glutPassiveMotionFunc(handlerFunc);
