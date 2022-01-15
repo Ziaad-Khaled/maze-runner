@@ -27,7 +27,8 @@ GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = false;
-
+bool keyUp = false;
+bool keySpace = false;
 //0:empty space 1:wall 2:coin 3:obstacle
 int position=0;
 bool firstFrame = true;
@@ -129,8 +130,8 @@ public:
 	}
 };
 //don't play with the intial values before telling ziad!!!!!
-Vector Eye(-7, 5, 20);
-Vector At(-7, -12, 10);
+Vector Eye(-7, 0.5, 20);
+Vector At(-7, 0, 10);
 Vector Up(0, 2, 0);
 
 int cameraZoom = 0;
@@ -459,9 +460,22 @@ void jump(void)
 	{
 		Eye.y += 0.1;
 		At.y += 0.1;
+
+		if (keyUp)
+		{
+			float oldEyeX = Eye.x;
+			float oldAtX = At.x;
+			float oldEyeZ = Eye.z;
+			float oldAtZ = At.z;
+			Eye.z-=0.2;
+			At.z-=0.2;
+			//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
+		}
+		
 		myDisplay();
 		cout << "heree";
 	}
+	
 	Eye.y -= 0.1;
 	At.y -= 0.1;
 	myDisplay();
@@ -487,7 +501,8 @@ void myKeyboard(unsigned char button, int x, int y)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
 	case ' ':
-		jump();
+		keySpace = true;
+		jump(); 
 		break;
 	case 27:
 		exit(0);
@@ -497,7 +512,7 @@ void myKeyboard(unsigned char button, int x, int y)
 	}
 
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 
@@ -592,8 +607,53 @@ void LoadAssets()
 //=======================================================================
 
 void Anim() {
+	if (keyUp && !keySpace)
+	{
+		//float oldEyeX = Eye.x;
+		//float oldAtX = At.x;
+		//float oldEyeZ = Eye.z;
+		//float oldAtZ = At.z;
+		Eye.z -= 0.1;
+		At.z -= 0.1;
+		//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
 
+	}
+	keyUp = false;
+	keySpace = false;
+	
 	glutPostRedisplay();
+}
+void isValidMotion(float oldEyeX, float oldAtX, float oldEyeZ, float oldAtZ)
+{
+	{
+		int positionYMaze = (int)-Eye.x + 2;
+		int positionXMaze = ((int)-Eye.z) + 11;
+		cout << "positionXMaze: ";
+		cout << positionXMaze;
+		cout << "\n";
+		cout << "positionYMaze: ";
+		cout << positionYMaze;
+		cout << "\n";
+		if (positionYMaze < 0 || positionXMaze < 0)
+			position = 0;
+		else
+		{
+			position = maze2[positionXMaze][positionYMaze];
+		}
+	}
+	cout << "Position: ";
+	cout << position;
+	cout << "\n";
+	if (position == 1)
+	{
+		//in a wall
+		Eye.x = oldEyeX;
+		At.x = oldAtX;
+		Eye.z = oldEyeZ;
+		At.z = oldAtZ;
+		//make sound of can't go to a wall 
+	}
+
 }
 
 void key(int key, int mx, int my) {
@@ -616,8 +676,11 @@ void key(int key, int mx, int my) {
 
 	}
 	if (key == GLUT_KEY_UP) {
-		Eye.z--;
-		At.z--;
+	{
+		keyUp = true;
+	}
+	//	Eye.z--;
+	//	At.z--;
 
 	}
 	//erfa3 el camera l fo2
@@ -667,7 +730,7 @@ void key(int key, int mx, int my) {
 		}
 
 
-	glutPostRedisplay();
+	//glutPostRedisplay();
 }
 
 void handlerFunc(int x, int y)
