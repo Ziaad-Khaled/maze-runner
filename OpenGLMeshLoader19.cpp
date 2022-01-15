@@ -641,7 +641,7 @@ void key(int key, int mx, int my) {
 		}
 		else
 		{
-			positionYMaze = (int)Eye.x + 16;
+			positionYMaze = (int)-Eye.x +2;
 			positionXMaze = ((int)-Eye.z) + 11;
 			cout << "positionXMaze: ";
 			cout << positionXMaze;
