@@ -11,6 +11,8 @@
 #include <dos.h>
 #include <windows.h>
 #include <future>
+#pragma comment(lib, "Winmm.lib")
+#include <mmsystem.h>
 
 using namespace std;
 
@@ -27,6 +29,8 @@ GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = false;
+
+int score = 3;
 
 //0:empty space 1:wall 2:coin 3:obstacle
 int position=0;
@@ -129,8 +133,8 @@ public:
 	}
 };
 //don't play with the intial values before telling ziad!!!!!
-Vector Eye(-7, 5, 20);
-Vector At(-7, -12, 10);
+Vector Eye(-7, 1, 20);
+Vector At(-7, -3, 10);
 Vector Up(0, 2, 0);
 
 int cameraZoom = 0;
@@ -357,11 +361,11 @@ void drawMazes()
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
-					/*glPushMatrix();
-					glTranslatef(j * 1 - 18, 1, i * 1 - 18);
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
-					glPopMatrix();*/
+					glPopMatrix();
 				}
 				if (maze2[i][j]==2) //coin
 					{
@@ -595,6 +599,25 @@ void Anim() {
 
 	glutPostRedisplay();
 }
+void collectCoin(int positionXMaze,int positionYMaze, bool maze0)
+{
+	if (maze0)
+	{
+		//collect maze0 coin
+	}
+	else
+	{
+		maze2[positionXMaze][positionYMaze] = 0;
+	}
+	score++;
+	PlaySound(TEXT("./Sound/coin.wav"), NULL, SND_ASYNC | SND_FILENAME);
+	myDisplay();
+}
+void hitObstacle(void)
+{
+	//should check if he is on air or not 
+	PlaySound(TEXT("./Sound/obstacle.wav"), NULL, SND_ASYNC | SND_FILENAME);
+}
 
 void key(int key, int mx, int my) {
 	float oldEyeX = Eye.x;
@@ -656,14 +679,24 @@ void key(int key, int mx, int my) {
 		cout << "Position: ";
 		cout << position;
 		cout << "\n";
-		if (position == 1)
-		{
+		switch (position) {
+		case 1:
 			//in a wall
 			Eye.x = oldEyeX;
 			At.x = oldAtX;
 			Eye.z = oldEyeZ;
 			At.z = oldAtZ;
 			//make sound of can't go to a wall 
+			break;
+		case 2:
+			collectCoin(positionXMaze,positionYMaze, maze0);
+			break;
+		case 3:
+			hitObstacle();
+			break;
+		default:
+			// code block
+			break;
 		}
 
 
