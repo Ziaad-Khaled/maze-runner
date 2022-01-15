@@ -288,7 +288,7 @@ void drawMazes()
 			for (int j = 0; j < 30; j++) {
 				if (maze2[i][j]==0)
 				{
-					flip = rand() % (6 - 1 + 1) + 1;
+					flip = rand() % (12 - 1 + 1) + 1;
 
 					if (flip == 3) //coin
 					{
@@ -363,22 +363,16 @@ void drawMazes()
 					glutSolidCube(1);
 					glPopMatrix();*/
 				}
-				else
-				{
-					/*flip++;
-
-					if (flip % 10 == 0) //coin
+				if (maze2[i][j]==2) //coin
 					{
-						maze2[i][j] << 2;
 						glPushMatrix();
 						glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
 						glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 						glutSolidSphere(0.1, 200, 200);
 						glPopMatrix();
 					}
-					if (flip % 10 == 8) //obstalce
-					{
-						maze2[i][j] << 3;
+				if (maze2[i][j] == 3) //obstalce
+				{
 						glPushMatrix();
 						glTranslatef(j * 1 - 18, 0, i * 1 - 18);
 						glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
@@ -386,8 +380,8 @@ void drawMazes()
 						glutSolidCone(0.1, 0.2, 200, 200);
 						//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 						glPopMatrix();
-					}*/
 				}
+				
 			}
 		}
 		glDisable(GL_TEXTURE_GEN_S); 
