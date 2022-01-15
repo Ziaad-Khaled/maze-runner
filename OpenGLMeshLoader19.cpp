@@ -275,6 +275,8 @@ void drawMazes()
 
 	
 	glPushMatrix();
+	glRotatef(180,0,1,0);
+	glTranslatef(16,0,7);
 	glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 	glEnable(GL_TEXTURE_GEN_T);
 
@@ -320,6 +322,7 @@ void drawMazes()
 				if (maze1[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
 					glTranslatef(3 + j * 1, 0, i * 1);
+				
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
@@ -346,7 +349,7 @@ void drawMazes()
 
 	else
 	{
-		for (int i = 29; i >= 0; i--) {
+		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
 				if (maze2[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
@@ -354,11 +357,11 @@ void drawMazes()
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
-					glPushMatrix();
+					/*glPushMatrix();
 					glTranslatef(j * 1 - 18, 1, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
-					glPopMatrix();
+					glPopMatrix();*/
 				}
 				else
 				{
