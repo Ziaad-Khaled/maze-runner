@@ -11,6 +11,8 @@
 #include <dos.h>
 #include <windows.h>
 #include <future>
+#pragma comment(lib, "Winmm.lib")
+#include <mmsystem.h>
 
 using namespace std;
 
@@ -27,6 +29,9 @@ GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = false;
+
+int score = 3;
+
 bool keyUp = false;
 bool keySpace = false;
 //0:empty space 1:wall 2:coin 3:obstacle
@@ -130,8 +135,8 @@ public:
 	}
 };
 //don't play with the intial values before telling ziad!!!!!
-Vector Eye(-7, 0.5, 20);
-Vector At(-7, 0, 10);
+Vector Eye(-7, 5, 20);
+Vector At(-7, -12, 10);
 Vector Up(0, 2, 0);
 
 int cameraZoom = 0;
@@ -358,11 +363,11 @@ void drawMazes()
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
-					/*glPushMatrix();
-					glTranslatef(j * 1 - 18, 1, i * 1 - 18);
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
-					glPopMatrix();*/
+					glPopMatrix();
 				}
 				if (maze2[i][j]==2) //coin
 					{
@@ -623,38 +628,6 @@ void Anim() {
 	
 	glutPostRedisplay();
 }
-void isValidMotion(float oldEyeX, float oldAtX, float oldEyeZ, float oldAtZ)
-{
-	{
-		int positionYMaze = (int)-Eye.x + 2;
-		int positionXMaze = ((int)-Eye.z) + 11;
-		cout << "positionXMaze: ";
-		cout << positionXMaze;
-		cout << "\n";
-		cout << "positionYMaze: ";
-		cout << positionYMaze;
-		cout << "\n";
-		if (positionYMaze < 0 || positionXMaze < 0)
-			position = 0;
-		else
-		{
-			position = maze2[positionXMaze][positionYMaze];
-		}
-	}
-	cout << "Position: ";
-	cout << position;
-	cout << "\n";
-	if (position == 1)
-	{
-		//in a wall
-		Eye.x = oldEyeX;
-		At.x = oldAtX;
-		Eye.z = oldEyeZ;
-		At.z = oldAtZ;
-		//make sound of can't go to a wall 
-	}
-
-}
 
 void key(int key, int mx, int my) {
 	float oldEyeX = Eye.x;
@@ -719,14 +692,24 @@ void key(int key, int mx, int my) {
 		cout << "Position: ";
 		cout << position;
 		cout << "\n";
-		if (position == 1)
-		{
+		switch (position) {
+		case 1:
 			//in a wall
 			Eye.x = oldEyeX;
 			At.x = oldAtX;
 			Eye.z = oldEyeZ;
 			At.z = oldAtZ;
 			//make sound of can't go to a wall 
+			break;
+		case 2:
+			collectCoin(positionXMaze,positionYMaze, maze0);
+			break;
+		case 3:
+			hitObstacle();
+			break;
+		default:
+			// code block
+			break;
 		}
 
 
