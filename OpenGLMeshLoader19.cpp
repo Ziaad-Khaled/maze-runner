@@ -28,14 +28,14 @@ GLdouble fovy = 45.0;
 GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
-bool maze0 = false;
+bool maze0 = true;
 
 int score = 3;
 
 bool keyUp = false;
 bool keySpace = false;
 //0:empty space 1:wall 2:coin 3:obstacle
-int position=0;
+int position = 0;
 bool firstFrame = true;
 int maze1[20][16] =
 {
@@ -135,8 +135,8 @@ public:
 	}
 };
 //don't play with the intial values before telling ziad!!!!!
-Vector Eye(-7, 5, 20);
-Vector At(-7, -12, 10);
+Vector Eye(-7, 12, 20);
+Vector At(-7, 2, 10);
 Vector Up(0, 2, 0);
 
 int cameraZoom = 0;
@@ -268,7 +268,7 @@ void RenderGround()
 	glEnd();
 	glPopMatrix();
 
-	
+
 
 	glEnable(GL_LIGHTING);	// Enable lighting again for other entites coming throung the pipeline.
 
@@ -279,20 +279,43 @@ void drawMazes()
 {
 	srand((unsigned int)time(0));
 
-	
+
 	glPushMatrix();
-	glRotatef(180,0,1,0);
-	glTranslatef(16,0,7);
+	glRotatef(180, 0, 1, 0);
 	glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 	glEnable(GL_TEXTURE_GEN_T);
 
-	
 	if (firstFrame == true) {
 		int flip = 0;
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 16; j++) {
+				if (maze1[i][j] == 0)
+				{
+					flip = rand() % (12 - 1 + 1) + 1;
 
+					if (flip == 3) //coin
+					{
+						maze1[i][j] = 2;
+					}
+					if (flip == 6)//obstacle
+					{
+						maze1[i][j] = 3;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < 20; i++)
+		{
+			for (int j = 0; j < 16; j++)
+			{
+				std::cout << maze1[i][j] << ' ';
+			}
+			std::cout << std::endl;
+		}
+		flip = 0;
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
-				if (maze2[i][j]==0)
+				if (maze2[i][j] == 0)
 				{
 					flip = rand() % (12 - 1 + 1) + 1;
 
@@ -319,42 +342,17 @@ void drawMazes()
 	}
 
 
+
+
+
+
+
 	//glBindTexture(GL_TEXTURE_2D, tex_ground.texture[0]);
 
-	if (maze0)
+
+	if (!maze0)
 	{
-		for (int i = 0; i < 20; i++) {
-			for (int j = 0; j < 16; j++) {
-				if (maze1[i][j] == 1) {  // Means there is a cube there
-					glPushMatrix();
-					glTranslatef(3 + j * 1, 0, i * 1);
-				
-					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
-					glutSolidCube(1);
-					glPopMatrix();
-				}
-				else
-				{
-					/*flip++;
-
-					if (flip % 10 == 0) //coin
-					{
-						glPushMatrix();
-						glPushMatrix();
-						glTranslatef(3 + j * 1, 0, i * 1);//10 + just for positioning
-						glutSolidSphere(0.2, 200, 200);
-				//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
-						glPopMatrix();
-						glPopMatrix();*/
-			//		}
-
-				}
-			}
-		}
-	}
-
-	else
-	{
+		glTranslatef(8, 0.5, 7);
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
 				if (maze2[i][j] == 1) {  // Means there is a cube there
@@ -369,32 +367,76 @@ void drawMazes()
 					glutSolidCube(1);
 					glPopMatrix();
 				}
-				if (maze2[i][j]==2) //coin
-					{
-						glPushMatrix();
-						glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
-						glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
-						glutSolidSphere(0.1, 200, 200);
-						glPopMatrix();
-					}
+				if (maze2[i][j] == 2) //coin
+				{
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
+					glutSolidSphere(0.1, 200, 200);
+					glPopMatrix();
+				}
 				if (maze2[i][j] == 3) //obstalce
 				{
-						glPushMatrix();
-						glTranslatef(j * 1 - 18, 0, i * 1 - 18);
-						glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
-						glRotatef(-90, 1, 0, 0);
-						glutSolidCone(0.1, 0.2, 200, 200);
-						//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
-						glPopMatrix();
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
+					glRotatef(-90, 1, 0, 0);
+					glutSolidCone(0.1, 0.2, 200, 200);
+					//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
+					glPopMatrix();
 				}
-				
+
 			}
 		}
-		glDisable(GL_TEXTURE_GEN_S); 
+		glDisable(GL_TEXTURE_GEN_S);
 		glDisable(GL_TEXTURE_GEN_T);
 		glPopMatrix();
+		
+		
 	}
-	
+	else
+	{
+		glTranslatef(18, 0.5, 15);
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 16; j++) {
+				if (maze1[i][j] == 1) {  // Means there is a cube there
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
+					glutSolidCube(1);
+					glPopMatrix();
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
+					glutSolidCube(1);
+					glPopMatrix();
+				}
+				if (maze1[i][j] == 2) //coin
+				{
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
+					glutSolidSphere(0.1, 200, 200);
+					glPopMatrix();
+				}
+				if (maze1[i][j] == 3) //obstalce
+				{
+					glPushMatrix();
+					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
+					glRotatef(-90, 1, 0, 0);
+					glutSolidCone(0.1, 0.2, 200, 200);
+					//		glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
+					glPopMatrix();
+				}
+			}
+		}
+		glDisable(GL_TEXTURE_GEN_S);
+		glDisable(GL_TEXTURE_GEN_T);
+		glPopMatrix();
+		
+	}
+
 }
 //=======================================================================
 // Display Function
@@ -443,14 +485,14 @@ void myDisplay(void)
 
 
 
-	
+
 
 	glPopMatrix();
 
 	//if(!mazeInitialized)
-		drawMazes();
+	drawMazes();
 
-	
+
 
 
 
@@ -458,10 +500,30 @@ void myDisplay(void)
 
 	glutSwapBuffers();
 }
+void collectCoin(int positionXMaze, int positionYMaze, bool maze0)
+{
+	if (maze0)
+	{
+		//collect maze0 coin
+	}
+	else
+	{
+		maze2[positionXMaze][positionYMaze] = 0;
+	}
+	score++;
+	PlaySound(TEXT("./Sound/coin.wav"), NULL, SND_ASYNC | SND_FILENAME);
+	myDisplay();
+}
+void hitObstacle(void)
+{
+	//should check if he is on air or not 
+	PlaySound(TEXT("./Sound/obstacle.wav"), NULL, SND_ASYNC | SND_FILENAME);
+}
+
 void jump(void)
 {
 	cout << "heree";
-	for (int i = 0;i < 7;i++)
+	for (int i = 0;i < 10;i++)
 	{
 		Eye.y += 0.1;
 		At.y += 0.1;
@@ -472,19 +534,65 @@ void jump(void)
 			float oldAtX = At.x;
 			float oldEyeZ = Eye.z;
 			float oldAtZ = At.z;
-			Eye.z-=0.2;
-			At.z-=0.2;
+			Eye.z -= 0.2;
+			At.z -= 0.2;
+			int positionXMaze;
+			int positionYMaze;
+
+			if (maze0)
+			{
+
+			}
+			else
+			{
+				positionYMaze = (int)-Eye.x + 2;
+				positionXMaze = ((int)-Eye.z) + 11;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze2[positionXMaze][positionYMaze];
+				}
+			}
+			cout << "Position: ";
+			cout << position;
+			cout << "\n";
+			switch (position) {
+			case 1:
+				//in a wall
+				Eye.x = oldEyeX;
+				At.x = oldAtX;
+				Eye.z = oldEyeZ;
+				At.z = oldAtZ;
+				//make sound of can't go to a wall 
+				break;
+			case 2:
+				collectCoin(positionXMaze, positionYMaze, maze0);
+				break;
+			case 3:
+				hitObstacle();
+				break;
+			default:
+				// code block
+				break;
+			}
 			//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
 		}
-		
+
 		myDisplay();
 		cout << "heree";
 	}
-	
-	Eye.y -= 0.1;
-	At.y -= 0.1;
+
+	//Eye.y -= 0.1;
+	//At.y -= 0.1;
 	myDisplay();
-	for (int i = 0;i < 3;i++)
+	for (int i = 0;i < 5;i++)
 	{
 		Eye.y -= 0.2;
 		At.y -= 0.2;
@@ -495,7 +603,7 @@ void jump(void)
 // Keyboard Function
 //=======================================================================
 void myKeyboard(unsigned char button, int x, int y)
-{	
+{
 	std::future<void> result_future;
 	switch (button)
 	{
@@ -507,7 +615,7 @@ void myKeyboard(unsigned char button, int x, int y)
 		break;
 	case ' ':
 		keySpace = true;
-		jump(); 
+		jump();
 		break;
 	case 27:
 		exit(0);
@@ -614,67 +722,22 @@ void LoadAssets()
 void Anim() {
 	if (keyUp && !keySpace)
 	{
-		//float oldEyeX = Eye.x;
-		//float oldAtX = At.x;
-		//float oldEyeZ = Eye.z;
-		//float oldAtZ = At.z;
-		Eye.z -= 0.1;
-		At.z -= 0.1;
-		//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
-
-	}
-	keyUp = false;
-	keySpace = false;
-	
-	glutPostRedisplay();
-}
-
-void key(int key, int mx, int my) {
-	float oldEyeX = Eye.x;
-	float oldAtX = At.x;
-	float oldEyeZ = Eye.z;
-	float oldAtZ = At.z;
-	
-	if (key == GLUT_KEY_LEFT) {
-		Eye.x--;
-		At.x--;
-	}
-	if (key == GLUT_KEY_RIGHT) {
-		Eye.x++;
-		At.x++;
-	}
-	if (key == GLUT_KEY_DOWN) {
-		Eye.z++;
-		At.z++;
-
-	}
-	if (key == GLUT_KEY_UP) {
-	{
-		keyUp = true;
-	}
-	//	Eye.z--;
-	//	At.z--;
-
-	}
-	//erfa3 el camera l fo2
-	//At.z--;
-	cout << "X: ";
-	cout << Eye.x;
-	cout << "\n";
-	cout << "Z: ";
-	cout << Eye.z;
-	cout << "\n";
-
-	int positionXMaze;
-	int positionYMaze;
+		float oldEyeX = Eye.x;
+		float oldAtX = At.x;
+		float oldEyeZ = Eye.z;
+		float oldAtZ = At.z;
+		Eye.z -= 1;
+		At.z -= 1;
+		int positionXMaze;
+		int positionYMaze;
 
 		if (maze0)
 		{
-		
+
 		}
 		else
 		{
-			positionYMaze = (int)-Eye.x +2;
+			positionYMaze = (int)-Eye.x + 2;
 			positionXMaze = ((int)-Eye.z) + 11;
 			cout << "positionXMaze: ";
 			cout << positionXMaze;
@@ -702,7 +765,7 @@ void key(int key, int mx, int my) {
 			//make sound of can't go to a wall 
 			break;
 		case 2:
-			collectCoin(positionXMaze,positionYMaze, maze0);
+			collectCoin(positionXMaze, positionYMaze, maze0);
 			break;
 		case 3:
 			hitObstacle();
@@ -711,6 +774,97 @@ void key(int key, int mx, int my) {
 			// code block
 			break;
 		}
+		//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
+
+	}
+	keyUp = false;
+	keySpace = false;
+
+	glutPostRedisplay();
+}
+
+void key(int key, int mx, int my) {
+	float oldEyeX = Eye.x;
+	float oldAtX = At.x;
+	float oldEyeZ = Eye.z;
+	float oldAtZ = At.z;
+
+	if (key == GLUT_KEY_LEFT) {
+		Eye.x--;
+		At.x--;
+	}
+	if (key == GLUT_KEY_RIGHT) {
+		Eye.x++;
+		At.x++;
+	}
+	if (key == GLUT_KEY_DOWN) {
+		Eye.z++;
+		At.z++;
+
+	}
+	if (key == GLUT_KEY_UP) {
+		{
+			keyUp = true;
+		}
+		//	Eye.z--;
+		//	At.z--;
+
+	}
+	//erfa3 el camera l fo2
+	//At.z--;
+	cout << "X: ";
+	cout << Eye.x;
+	cout << "\n";
+	cout << "Z: ";
+	cout << Eye.z;
+	cout << "\n";
+
+	int positionXMaze;
+	int positionYMaze;
+
+	if (maze0)
+	{
+
+	}
+	else
+	{
+		positionYMaze = (int)-Eye.x + 2;
+		positionXMaze = ((int)-Eye.z) + 11;
+		cout << "positionXMaze: ";
+		cout << positionXMaze;
+		cout << "\n";
+		cout << "positionYMaze: ";
+		cout << positionYMaze;
+		cout << "\n";
+		if (positionYMaze < 0 || positionXMaze < 0)
+			position = 0;
+		else
+		{
+			position = maze2[positionXMaze][positionYMaze];
+		}
+	}
+	cout << "Position: ";
+	cout << position;
+	cout << "\n";
+	switch (position) {
+	case 1:
+		//in a wall
+		Eye.x = oldEyeX;
+		At.x = oldAtX;
+		Eye.z = oldEyeZ;
+		At.z = oldAtZ;
+		//make sound of can't go to a wall 
+		break;
+	case 2:
+		collectCoin(positionXMaze, positionYMaze, maze0);
+		break;
+	case 3:
+		hitObstacle();
+		break;
+	default:
+		// code block
+		break;
+	}
 
 
 	//glutPostRedisplay();
