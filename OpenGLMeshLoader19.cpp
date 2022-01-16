@@ -21,6 +21,9 @@ using namespace std;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
+float mousePosX = 0;
+float mousePosY = 0;
+float deltaAngleX = 0;
 
 GLuint tex;
 char title[] = "3D Model Loader Sample";
@@ -30,9 +33,10 @@ GLdouble fovy = 45.0;
 GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
-bool maze0 = true;
-
+bool maze0 = false;
+bool firstPerson = true;
 int score = 3;
+
 
 bool keyUp = false;
 bool keySpace = false;
@@ -140,12 +144,17 @@ public:
 Vector Eye(-7,0.5, 20);
 Vector At(-7, 0, 10);
 Vector Up(0, 2, 0);
+Vector CharacterPosition(Eye.x, Eye.y-0.5, Eye.z);
+Vector Eye3rdPerson(Eye.x, Eye.y+0.5, Eye.z+1);        // (Eye.x, 
+Vector At3rdPerson(At.x, At.y-4, At.z);
+
 
 int cameraZoom = 0;
 
 // Model Variables
 Model_3DS model_house;
 Model_3DS model_tree;
+Model_3DS model_character;
 
 
 // Textures
@@ -228,7 +237,14 @@ void myInit(void)
 
 	glLoadIdentity();
 
-	gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);
+	if (firstPerson) {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+	else {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
 	//*******************************************************************************************//
 	// EYE (ex, ey, ez): defines the location of the camera.									 //
 	// AT (ax, ay, az):	 denotes the direction where the camera is aiming at.					 //
@@ -364,11 +380,11 @@ void drawMazes()
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
-					glPushMatrix();
-					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
-					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
-					glutSolidCube(1);
-					glPopMatrix();
+					//glPushMatrix();
+					//glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
+					//glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
+					//glutSolidCube(1);
+					//glPopMatrix();
 				}
 				if (maze2[i][j] == 2) //coin
 				{
@@ -472,6 +488,22 @@ void displayScore() {
 //=======================================================================
 void myDisplay(void)
 {
+	Eye3rdPerson.x = Eye.x;
+	Eye3rdPerson.y = Eye.y + 0.5;
+	Eye3rdPerson.z = Eye.z + 1;        // (Eye.x, 
+	At3rdPerson.x = At.x;
+	At3rdPerson.y = At.y - 4;
+	At3rdPerson.z = At.z;
+
+	if (firstPerson) {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+	else {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+
 	myInit();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -521,6 +553,14 @@ void myDisplay(void)
 	//if(!mazeInitialized)
 	drawMazes();
 
+	glPushMatrix();
+	
+	glTranslatef(Eye.x, Eye.y-0.5, Eye.z);
+	glScalef(0.1, 0.1, 0.1);
+	glRotatef(180.f, 0, 1, 0);
+	model_character.Draw();
+	glPopMatrix();
+
 
 
 	displayScore();
@@ -554,7 +594,7 @@ void hitObstacle(void)
 void jump(void)
 {
 	cout << "heree";
-	for (int i = 0;i < 10;i++)
+	for (int i = 0;i < 6;i++)
 	{
 		Eye.y += 0.1;
 		At.y += 0.1;
@@ -636,7 +676,7 @@ void jump(void)
 	//Eye.y -= 0.1;
 	//At.y -= 0.1;
 	myDisplay();
-	for (int i = 0;i < 5;i++)
+	for (int i = 0;i < 3;i++)
 	{
 		Eye.y -= 0.2;
 		At.y -= 0.2;
@@ -660,6 +700,10 @@ void myKeyboard(unsigned char button, int x, int y)
 	case ' ':
 		keySpace = true;
 		jump();
+		break;
+	case 'p':
+		firstPerson = !firstPerson;
+		cout << "first Person changed";
 		break;
 	case 27:
 		exit(0);
@@ -695,7 +739,14 @@ void myMotion(int x, int y)
 
 	glLoadIdentity();	//Clear Model_View Matrix
 
-	gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	if (firstPerson) {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+	else {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
 
 	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -739,7 +790,14 @@ void myReshape(int w, int h)
 	// go back to modelview matrix so we can move the objects about
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);
+	if (firstPerson) {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+	else {
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
 }
 
 //=======================================================================
@@ -750,6 +808,7 @@ void LoadAssets()
 	// Loading Model files
 	model_house.Load("Models/house/house.3DS");
 	model_tree.Load("Models/tree/Tree1.3ds");
+	model_character.Load("Models/character/Muhammer.3ds");
 
 	// Loading texture files
 	tex_ground.Load("Textures/ground.bmp");
@@ -765,6 +824,23 @@ void LoadAssets()
 //=======================================================================
 
 void Anim() {
+	Eye3rdPerson.x = Eye.x;
+	Eye3rdPerson.y = Eye.y + 0.5;
+	Eye3rdPerson.z= Eye.z + 1;        // (Eye.x, 
+	At3rdPerson.x = At.x;
+	At3rdPerson.y = At.y - 4;
+	At3rdPerson.z = At.z;
+	
+	//habd start
+	if (firstPerson){
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+	else{
+		glLoadIdentity();	//Clear Model_View Matrix
+		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+	}
+	//habd finish
 	if (keyUp && !keySpace)
 	{
 		float oldEyeX = Eye.x;
@@ -839,6 +915,11 @@ void Anim() {
 	keySpace = false;
 
 	glutPostRedisplay();
+}
+
+void mouseMove(int mx, int my) {
+	mousePosX = mx;
+	mousePosY = my;
 }
 
 void key(int key, int mx, int my) {
@@ -965,7 +1046,7 @@ void main(int argc, char** argv)
 	glutKeyboardFunc(myKeyboard);
 
 	//glutMotionFunc(myMotion);
-	//glutPassiveMotionFunc(handlerFunc);
+	glutPassiveMotionFunc(mouseMove);
 	//glutMouseFunc(myMouse);
 
 	//glutReshapeFunc(myReshape);
