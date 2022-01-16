@@ -32,8 +32,6 @@ bool maze0 = true;
 
 int score = 3;
 
-bool keyUp = false;
-bool keySpace = false;
 //0:empty space 1:wall 2:coin 3:obstacle
 int position = 0;
 bool firstFrame = true;
@@ -338,7 +336,7 @@ void drawMazes()
 			}
 			std::cout << std::endl;
 		}
-		firstFrame = false;
+		secondFrame = false;
 	}
 
 
@@ -625,7 +623,7 @@ void myKeyboard(unsigned char button, int x, int y)
 	}
 
 
-	//glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 
@@ -720,7 +718,16 @@ void LoadAssets()
 //=======================================================================
 
 void Anim() {
-	if (keyUp && !keySpace)
+
+	glutPostRedisplay();
+}
+void collectCoin(int positionXMaze,int positionYMaze, bool maze0)
+{
+	if (maze0)
+	{
+		//collect maze0 coin
+	}
+	else
 	{
 		float oldEyeX = Eye.x;
 		float oldAtX = At.x;
@@ -867,7 +874,7 @@ void key(int key, int mx, int my) {
 	}
 
 
-	//glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 void handlerFunc(int x, int y)
