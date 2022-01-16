@@ -39,26 +39,26 @@ int position = 0;
 bool firstFrame = true;
 int maze1[20][16] =
 {
-	{ 1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1 },
-	{ 1,0,0,1,0,1,1,1,1,0,0,0,0,0,0,1 },
-	{ 1,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1 },
-	{ 1,0,0,1,0,0,0,1,1,1,1,0,0,1,0,1 },
-	{ 1,1,0,0,1,1,0,1,1,1,0,0,1,0,0,1 },
-	{ 1,1,1,0,0,0,0,1,0,0,0,1,1,1,1,1 },
-	{ 1,1,0,0,1,0,1,1,0,1,0,1,1,1,1,1 },
-	{ 1,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1 },
-	{ 1,0,1,0,1,0,0,1,1,1,1,1,0,1,1,1 },
-	{ 1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1 },
-	{ 1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,1 },
-	{ 1,0,0,1,0,1,1,1,1,0,0,0,0,1,1,1 },
-	{ 1,0,1,1,0,1,0,1,1,1,0,1,0,1,1,1 },
-	{ 1,0,0,1,0,0,0,1,1,1,0,0,0,0,0,1 },
-	{ 1,1,0,0,1,1,0,1,1,0,0,1,0,1,0,1 },
-	{ 1,1,1,0,0,0,0,1,1,0,1,1,0,1,1,1 },
-	{ 1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,1 },
-	{ 1,0,0,0,1,0,1,0,1,1,0,1,0,1,0,1 },
-	{ 1,0,1,0,1,0,0,0,0,1,0,1,0,1,1,1 },
-	{ 1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1 },
+	{ 1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1 },//1
+	{ 1,0,1,0,1,0,0,0,0,1,0,1,0,1,1,1 },//2
+	{ 1,0,0,0,1,0,1,0,1,1,0,1,0,1,0,1 },//3
+	{ 1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,1 },//4
+	{ 1,1,1,0,0,0,0,1,1,0,1,1,0,1,1,1 },//5
+	{ 1,1,0,0,1,1,0,1,1,0,0,1,0,1,0,1 },//6
+	{ 1,0,0,1,0,0,0,1,1,1,0,0,0,0,0,1 },//7
+	{ 1,0,1,1,0,1,0,1,1,1,0,1,0,1,1,1 },//8
+	{ 1,0,0,1,0,1,1,1,1,0,0,0,0,1,1,1 },//9
+	{ 1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,1 },//10
+	{ 1,1,1,1,1,0,1,1,1,0,0,0,0,0,1,1 },//11
+	{ 1,0,1,0,1,0,0,1,1,1,1,1,0,1,1,1 },//12
+	{ 1,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1 },//13
+	{ 1,1,0,0,1,0,1,1,0,1,0,1,1,1,1,1 },//14
+	{ 1,1,1,0,0,0,0,1,0,0,0,1,1,1,1,1 },//15
+	{ 1,1,0,0,1,1,0,1,1,1,0,0,1,0,0,1 },//16
+	{ 1,0,0,1,0,0,0,1,1,1,1,0,0,1,0,1 },//17
+	{ 1,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1 },//18
+	{ 1,0,0,1,0,1,1,1,1,0,0,0,0,0,0,1 },//19
+	{ 1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1 },//20
 };
 int maze2[30][30] =
 {
@@ -135,8 +135,8 @@ public:
 	}
 };
 //don't play with the intial values before telling ziad!!!!!
-Vector Eye(-7, 12, 20);
-Vector At(-7, 2, 10);
+Vector Eye(-7,0.5, 20);
+Vector At(-7, 0, 10);
 Vector Up(0, 2, 0);
 
 int cameraZoom = 0;
@@ -258,13 +258,13 @@ void RenderGround()
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);	// Set quad normal direction.
 	glTexCoord2f(0, 0);		// Set tex coordinates ( Using (0,0) -> (5,5) with texture wrapping set to GL_REPEAT to simulate the ground repeated grass texture).
-	glVertex3f(-20, 0, -20);
+	glVertex3f(-40, 0, -40);
 	glTexCoord2f(5, 0);
-	glVertex3f(20, 0, -20);
+	glVertex3f(40, 0, -40);
 	glTexCoord2f(5, 5);
-	glVertex3f(20, 0, 20);
+	glVertex3f(40, 0, 40);
 	glTexCoord2f(0, 5);
-	glVertex3f(-20, 0, 20);
+	glVertex3f(-40, 0, 40);
 	glEnd();
 	glPopMatrix();
 
@@ -352,7 +352,7 @@ void drawMazes()
 
 	if (!maze0)
 	{
-		glTranslatef(8, 0.5, 7);
+		glTranslatef(16, 0, 7);
 		for (int i = 0; i < 30; i++) {
 			for (int j = 0; j < 30; j++) {
 				if (maze2[i][j] == 1) {  // Means there is a cube there
@@ -396,17 +396,12 @@ void drawMazes()
 	}
 	else
 	{
-		glTranslatef(18, 0.5, 15);
+		glTranslatef(20, 0.5, 5);
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 16; j++) {
 				if (maze1[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
 					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
-					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
-					glutSolidCube(1);
-					glPopMatrix();
-					glPushMatrix();
-					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
@@ -422,7 +417,7 @@ void drawMazes()
 				if (maze1[i][j] == 3) //obstalce
 				{
 					glPushMatrix();
-					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+					glTranslatef(j * 1 - 18, -0.5, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_rock.texture[0]);
 					glRotatef(-90, 1, 0, 0);
 					glutSolidCone(0.1, 0.2, 200, 200);
@@ -504,7 +499,7 @@ void collectCoin(int positionXMaze, int positionYMaze, bool maze0)
 {
 	if (maze0)
 	{
-		//collect maze0 coin
+		maze1[positionXMaze][positionYMaze] = 0;
 	}
 	else
 	{
@@ -517,6 +512,8 @@ void collectCoin(int positionXMaze, int positionYMaze, bool maze0)
 void hitObstacle(void)
 {
 	//should check if he is on air or not 
+	//if on air do light effect 
+	score--;
 	PlaySound(TEXT("./Sound/obstacle.wav"), NULL, SND_ASYNC | SND_FILENAME);
 }
 
@@ -541,7 +538,20 @@ void jump(void)
 
 			if (maze0)
 			{
-
+				positionXMaze = ((int)-Eye.z) + 13;
+				positionYMaze = (int)-Eye.x - 2;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze1[positionXMaze][positionYMaze];
+				}
 			}
 			else
 			{
@@ -733,7 +743,20 @@ void Anim() {
 
 		if (maze0)
 		{
-
+			positionXMaze = ((int)-Eye.z) + 13;
+			positionYMaze = (int)-Eye.x - 2;
+			cout << "positionXMaze: ";
+			cout << positionXMaze;
+			cout << "\n";
+			cout << "positionYMaze: ";
+			cout << positionYMaze;
+			cout << "\n";
+			if (positionYMaze < 0 || positionXMaze < 0)
+				position = 0;
+			else
+			{
+				position = maze1[positionXMaze][positionYMaze];
+			}
 		}
 		else
 		{
@@ -824,7 +847,20 @@ void key(int key, int mx, int my) {
 
 	if (maze0)
 	{
-
+		positionXMaze = ((int)-Eye.z) + 13;
+		positionYMaze = (int)-Eye.x - 2;
+		cout << "positionXMaze: ";
+		cout << positionXMaze;
+		cout << "\n";
+		cout << "positionYMaze: ";
+		cout << positionYMaze;
+		cout << "\n";
+		if (positionYMaze < 0 || positionXMaze < 0)
+			position = 0;
+		else
+		{
+			position = maze1[positionXMaze][positionYMaze];
+		}
 	}
 	else
 	{
