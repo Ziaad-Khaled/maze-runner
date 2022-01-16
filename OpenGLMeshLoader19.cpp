@@ -13,6 +13,8 @@
 #include <future>
 #pragma comment(lib, "Winmm.lib")
 #include <mmsystem.h>
+#include <sstream>
+using namespace std;
 
 using namespace std;
 
@@ -151,6 +153,7 @@ GLTexture tex_ground;
 GLTexture tex_coin;
 GLTexture tex_wall;
 GLTexture tex_rock;
+GLTexture tex_maze1_wall;
 
 
 //=======================================================================
@@ -402,14 +405,14 @@ void drawMazes()
 				if (maze1[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
 					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
-					glBindTexture(GL_TEXTURE_2D, tex_wall.texture[0]);
+					glBindTexture(GL_TEXTURE_2D, tex_maze1_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
 				}
 				if (maze1[i][j] == 2) //coin
 				{
 					glPushMatrix();
-					glTranslatef(j * 1 - 18, 0.5, i * 1 - 18);
+					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 					glutSolidSphere(0.1, 200, 200);
 					glPopMatrix();
@@ -432,6 +435,37 @@ void drawMazes()
 		
 	}
 
+}
+void displayScore() {
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	//I like to use glm because glu is deprecated
+	//glm::mat4 orth= glm::ortho(0.0f, (float)win_width, 0.0f, (float)win_height);
+	//glMultMatrixf(&(orth[0][0]));
+	gluOrtho2D(0.0, WIDTH, 0.0, HEIGHT);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(0.0f, 1.0f, 0.0f);//needs to be called before RasterPos
+	glRasterPos2i(2, 20);
+	std::string s = "  Score: " + std::to_string(score);
+	void* font = GLUT_BITMAP_TIMES_ROMAN_24;
+
+	for (std::string::iterator i = s.begin(); i != s.end(); ++i)
+	{
+		char c = *i;
+		glutBitmapCharacter(font, c);
+	}
+
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glColor3f(1, 1, 1);
+	glEnable(GL_TEXTURE_2D);
 }
 //=======================================================================
 // Display Function
@@ -489,7 +523,7 @@ void myDisplay(void)
 
 
 
-
+	displayScore();
 
 	//glFlush();
 
@@ -723,6 +757,7 @@ void LoadAssets()
 	tex_coin.Load("Textures/coin.bmp");
 	tex_wall.Load("Textures/wall.bmp");
 	tex_rock.Load("Textures/rock.bmp");
+	tex_maze1_wall.Load("Textures/wall1.bmp");
 }
 
 //=======================================================================
