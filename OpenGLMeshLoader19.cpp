@@ -34,6 +34,7 @@ GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = true;
 bool firstPerson = true;
+bool iAmAtObstacle = false;
 float characterAngle = 180;
 int score = 3;
 char looking = 'f'; //f,b,r,l
@@ -694,11 +695,16 @@ void collectCoin(int positionXMaze, int positionYMaze, bool maze0)
 	myDisplay();
 }
 void hitObstacle(void)
-{
-	//should check if he is on air or not 
-	//if on air do light effect 
-	score--;
-	PlaySound(TEXT("./Sound/obstacle.wav"), NULL, SND_ASYNC | SND_FILENAME);
+{	
+	if (!iAmAtObstacle)
+	{
+		iAmAtObstacle = true;
+		//should check if he is on air or not 
+		//if on air do light effect 
+		score--;
+		PlaySound(TEXT("./Sound/obstacle.wav"), NULL, SND_ASYNC | SND_FILENAME);
+	}
+	
 }
 
 void jump(void)
@@ -1407,7 +1413,10 @@ void key(int key, int mx, int my) {
 		// code block
 		break;
 	}
-
+	if (position != 3)
+	{
+		iAmAtObstacle = false;
+	}
 
 	//glutPostRedisplay();
 }
