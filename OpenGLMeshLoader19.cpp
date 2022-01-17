@@ -504,7 +504,7 @@ void drawMazes()
 				
 				if (maze1[i][j] == 1) {  // Means there is a cube there
 					glPushMatrix();
-					glTranslatef(j * 1 - 18, 0, i * 1 - 18);
+					glTranslatef(j * 1 - 18, -0.5, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_maze1_wall.texture[0]);
 					glutSolidCube(1);
 					glPopMatrix();
@@ -512,7 +512,7 @@ void drawMazes()
 				if (maze1[i][j] == 2) //coin
 				{
 					glPushMatrix();
-					glTranslatef(j * 1 - 18, -0.5, i * 1 - 18);
+					glTranslatef(j * 1 - 18, -0.2, i * 1 - 18);
 					glBindTexture(GL_TEXTURE_2D, tex_coin.texture[0]);
 					glutSolidSphere(0.1, 200, 200);
 					glPopMatrix();
@@ -1345,6 +1345,27 @@ void key(int key, int mx, int my) {
 		else
 		{
 			position = maze1[positionXMaze][positionYMaze];
+		}
+		if (positionXMaze > 19)
+		{
+			Eye.x = -7;
+			Eye.y = 0.5;
+			Eye.z = 20;
+			At.x= -7;
+			At.y = 0;
+			At.z = 10;
+			CharacterPosition.x = Eye.x;
+			CharacterPosition.y = Eye.y - 0.5;
+			CharacterPosition.z = Eye.z;
+			Eye3rdPerson.x = Eye.x;
+			Eye3rdPerson.y = Eye.y + 0.5;
+			Eye3rdPerson.z = Eye.z;
+			At3rdPerson.x = At.x;
+			At3rdPerson.y = At.y - 4;
+			At3rdPerson.z = At.z;
+			characterAngle = 180;
+			
+			maze0 = false;
 		}
 	}
 	else
