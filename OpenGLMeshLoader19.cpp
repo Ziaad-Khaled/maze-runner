@@ -21,8 +21,6 @@ using namespace std;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
-float mousePosX = 0;
-float mousePosY = 0;
 float deltaAngleX = 0;
 
 GLuint tex;
@@ -35,8 +33,9 @@ GLdouble zNear = 0.1;
 GLdouble zFar = 100;
 bool maze0 = false;
 bool firstPerson = true;
+float characterAngle = 180;
 int score = 3;
-
+char looking = 'f'; //f,b,r,l
 
 bool keyUp = false;
 bool keySpace = false;
@@ -141,12 +140,12 @@ public:
 	}
 };
 //don't play with the intial values before telling ziad!!!!!
-Vector Eye(-7,0.5, 20);
+Vector Eye(-7, 0.5, 20);
 Vector At(-7, 0, 10);
 Vector Up(0, 2, 0);
-Vector CharacterPosition(Eye.x, Eye.y-0.5, Eye.z);
-Vector Eye3rdPerson(Eye.x, Eye.y+0.5, Eye.z+1);        // (Eye.x, 
-Vector At3rdPerson(At.x, At.y-4, At.z);
+Vector CharacterPosition(Eye.x, Eye.y - 0.5, Eye.z);
+Vector Eye3rdPerson(Eye.x, Eye.y + 0.5, Eye.z + 1);        // (Eye.x, 
+Vector At3rdPerson(At.x, At.y - 4, At.z);
 
 
 int cameraZoom = 0;
@@ -240,10 +239,16 @@ void myInit(void)
 	if (firstPerson) {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 	else {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 	//*******************************************************************************************//
 	// EYE (ex, ey, ez): defines the location of the camera.									 //
@@ -410,8 +415,8 @@ void drawMazes()
 		glDisable(GL_TEXTURE_GEN_S);
 		glDisable(GL_TEXTURE_GEN_T);
 		glPopMatrix();
-		
-		
+
+
 	}
 	else
 	{
@@ -448,7 +453,7 @@ void drawMazes()
 		glDisable(GL_TEXTURE_GEN_S);
 		glDisable(GL_TEXTURE_GEN_T);
 		glPopMatrix();
-		
+
 	}
 
 }
@@ -498,10 +503,16 @@ void myDisplay(void)
 	if (firstPerson) {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 	else {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 
 	myInit();
@@ -554,10 +565,10 @@ void myDisplay(void)
 	drawMazes();
 
 	glPushMatrix();
-	
-	glTranslatef(Eye.x, Eye.y-0.5, Eye.z);
+
+	glTranslatef(Eye.x, Eye.y - 0.5, Eye.z);
 	glScalef(0.1, 0.1, 0.1);
-	glRotatef(180.f, 0, 1, 0);
+	glRotatef(characterAngle, 0, 1, 0);
 	model_character.Draw();
 	glPopMatrix();
 
@@ -601,6 +612,7 @@ void jump(void)
 
 		if (keyUp)
 		{
+
 			float oldEyeX = Eye.x;
 			float oldAtX = At.x;
 			float oldEyeZ = Eye.z;
@@ -667,6 +679,8 @@ void jump(void)
 				break;
 			}
 			//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
+
+
 		}
 
 		myDisplay();
@@ -742,10 +756,16 @@ void myMotion(int x, int y)
 	if (firstPerson) {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 	else {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 
 	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
@@ -793,10 +813,16 @@ void myReshape(int w, int h)
 	if (firstPerson) {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 	else {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 }
 
@@ -826,19 +852,25 @@ void LoadAssets()
 void Anim() {
 	Eye3rdPerson.x = Eye.x;
 	Eye3rdPerson.y = Eye.y + 0.5;
-	Eye3rdPerson.z= Eye.z + 1;        // (Eye.x, 
+	Eye3rdPerson.z = Eye.z + 1;        // (Eye.x, 
 	At3rdPerson.x = At.x;
 	At3rdPerson.y = At.y - 4;
 	At3rdPerson.z = At.z;
-	
+
 	//habd start
-	if (firstPerson){
+	if (firstPerson) {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye.x, Eye.y, Eye.z, At.x, At.y, At.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
-	else{
+	else {
 		glLoadIdentity();	//Clear Model_View Matrix
 		gluLookAt(Eye3rdPerson.x, Eye3rdPerson.y, Eye3rdPerson.z, At3rdPerson.x, At3rdPerson.y, At3rdPerson.z, Up.x, Up.y, Up.z);	//Setup Camera with modified paramters
+		glTranslated(Eye.x, Eye.y, Eye.z);
+		glRotated(180 - characterAngle, 0, 1, 0);
+		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 	//habd finish
 	if (keyUp && !keySpace)
@@ -847,69 +879,260 @@ void Anim() {
 		float oldAtX = At.x;
 		float oldEyeZ = Eye.z;
 		float oldAtZ = At.z;
-		Eye.z -= 1;
-		At.z -= 1;
-		int positionXMaze;
-		int positionYMaze;
+		if (looking == 'f') {
+			Eye.z -= 1;
+			At.z -= 1;
+			int positionXMaze;
+			int positionYMaze;
 
-		if (maze0)
-		{
-			positionXMaze = ((int)-Eye.z) + 13;
-			positionYMaze = (int)-Eye.x - 2;
-			cout << "positionXMaze: ";
-			cout << positionXMaze;
-			cout << "\n";
-			cout << "positionYMaze: ";
-			cout << positionYMaze;
-			cout << "\n";
-			if (positionYMaze < 0 || positionXMaze < 0)
-				position = 0;
+			if (maze0)
+			{
+				positionXMaze = ((int)-Eye.z) + 13;
+				positionYMaze = (int)-Eye.x - 2;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze1[positionXMaze][positionYMaze];
+				}
+			}
 			else
 			{
-				position = maze1[positionXMaze][positionYMaze];
+				positionYMaze = (int)-Eye.x + 2;
+				positionXMaze = ((int)-Eye.z) + 11;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze2[positionXMaze][positionYMaze];
+				}
 			}
+			cout << "Position: ";
+			cout << position;
+			cout << "\n";
+			switch (position) {
+			case 1:
+				//in a wall
+				Eye.x = oldEyeX;
+				At.x = oldAtX;
+				Eye.z = oldEyeZ;
+				At.z = oldAtZ;
+				//make sound of can't go to a wall 
+				break;
+			case 2:
+				collectCoin(positionXMaze, positionYMaze, maze0);
+				break;
+			case 3:
+				hitObstacle();
+				break;
+			default:
+				// code block
+				break;
+			}
+			//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
 		}
-		else
-		{
-			positionYMaze = (int)-Eye.x + 2;
-			positionXMaze = ((int)-Eye.z) + 11;
-			cout << "positionXMaze: ";
-			cout << positionXMaze;
-			cout << "\n";
-			cout << "positionYMaze: ";
-			cout << positionYMaze;
-			cout << "\n";
-			if (positionYMaze < 0 || positionXMaze < 0)
-				position = 0;
+		else if (looking == 'r') {
+			Eye.x++;
+			At.x++;
+			int positionXMaze;
+			int positionYMaze;
+
+			if (maze0)
+			{
+				positionXMaze = ((int)-Eye.z) + 13;
+				positionYMaze = (int)-Eye.x - 2;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze1[positionXMaze][positionYMaze];
+				}
+			}
 			else
 			{
-				position = maze2[positionXMaze][positionYMaze];
+				positionYMaze = (int)-Eye.x + 2;
+				positionXMaze = ((int)-Eye.z) + 11;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze2[positionXMaze][positionYMaze];
+				}
+			}
+			cout << "Position: ";
+			cout << position;
+			cout << "\n";
+			switch (position) {
+			case 1:
+				//in a wall
+				Eye.x = oldEyeX;
+				At.x = oldAtX;
+				Eye.z = oldEyeZ;
+				At.z = oldAtZ;
+				//make sound of can't go to a wall 
+				break;
+			case 2:
+				collectCoin(positionXMaze, positionYMaze, maze0);
+				break;
+			case 3:
+				hitObstacle();
+				break;
+			default:
+				// code block
+				break;
+			}
+
+		}
+		else if (looking == 'l') {
+			Eye.x--;
+			At.x--;
+			int positionXMaze;
+			int positionYMaze;
+
+			if (maze0)
+			{
+				positionXMaze = ((int)-Eye.z) + 13;
+				positionYMaze = (int)-Eye.x - 2;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze1[positionXMaze][positionYMaze];
+				}
+			}
+			else
+			{
+				positionYMaze = (int)-Eye.x + 2;
+				positionXMaze = ((int)-Eye.z) + 11;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze2[positionXMaze][positionYMaze];
+				}
+			}
+			cout << "Position: ";
+			cout << position;
+			cout << "\n";
+			switch (position) {
+			case 1:
+				//in a wall
+				Eye.x = oldEyeX;
+				At.x = oldAtX;
+				Eye.z = oldEyeZ;
+				At.z = oldAtZ;
+				//make sound of can't go to a wall 
+				break;
+			case 2:
+				collectCoin(positionXMaze, positionYMaze, maze0);
+				break;
+			case 3:
+				hitObstacle();
+				break;
+			default:
+				// code block
+				break;
 			}
 		}
-		cout << "Position: ";
-		cout << position;
-		cout << "\n";
-		switch (position) {
-		case 1:
-			//in a wall
-			Eye.x = oldEyeX;
-			At.x = oldAtX;
-			Eye.z = oldEyeZ;
-			At.z = oldAtZ;
-			//make sound of can't go to a wall 
-			break;
-		case 2:
-			collectCoin(positionXMaze, positionYMaze, maze0);
-			break;
-		case 3:
-			hitObstacle();
-			break;
-		default:
-			// code block
-			break;
-		}
-		//isValidMotion(oldEyeX, oldAtX, oldEyeZ, oldAtZ);
+		else if (looking == 'b') {
+			Eye.z++;
+			At.z++;
+			int positionXMaze;
+			int positionYMaze;
 
+			if (maze0)
+			{
+				positionXMaze = ((int)-Eye.z) + 13;
+				positionYMaze = (int)-Eye.x - 2;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze1[positionXMaze][positionYMaze];
+				}
+			}
+			else
+			{
+				positionYMaze = (int)-Eye.x + 2;
+				positionXMaze = ((int)-Eye.z) + 11;
+				cout << "positionXMaze: ";
+				cout << positionXMaze;
+				cout << "\n";
+				cout << "positionYMaze: ";
+				cout << positionYMaze;
+				cout << "\n";
+				if (positionYMaze < 0 || positionXMaze < 0)
+					position = 0;
+				else
+				{
+					position = maze2[positionXMaze][positionYMaze];
+				}
+			}
+			cout << "Position: ";
+			cout << position;
+			cout << "\n";
+			switch (position) {
+			case 1:
+				//in a wall
+				Eye.x = oldEyeX;
+				At.x = oldAtX;
+				Eye.z = oldEyeZ;
+				At.z = oldAtZ;
+				//make sound of can't go to a wall 
+				break;
+			case 2:
+				collectCoin(positionXMaze, positionYMaze, maze0);
+				break;
+			case 3:
+				hitObstacle();
+				break;
+			default:
+				// code block
+				break;
+			}
+		}
 	}
 	keyUp = false;
 	keySpace = false;
@@ -917,10 +1140,6 @@ void Anim() {
 	glutPostRedisplay();
 }
 
-void mouseMove(int mx, int my) {
-	mousePosX = mx;
-	mousePosY = my;
-}
 
 void key(int key, int mx, int my) {
 	float oldEyeX = Eye.x;
@@ -929,17 +1148,57 @@ void key(int key, int mx, int my) {
 	float oldAtZ = At.z;
 
 	if (key == GLUT_KEY_LEFT) {
-		Eye.x--;
-		At.x--;
+		//Eye.x--;
+		//At.x--;
+		if (looking == 'f') {
+			looking = 'l';
+			characterAngle += 90;
+		}
+		else if (looking == 'r') {
+			looking = 'f';
+			characterAngle += 90;
+		}
+
+		else if (looking == 'l') {
+			looking = 'b';
+			characterAngle += 90;
+		}
+
+		else if (looking == 'b') {
+			looking = 'r';
+			characterAngle += 90;
+		}
+
 	}
 	if (key == GLUT_KEY_RIGHT) {
-		Eye.x++;
-		At.x++;
+		//Eye.x++;
+		//At.x++;
+		if (looking == 'f') {
+			looking = 'r';
+			characterAngle -= 90;
+		}
+		else if (looking == 'l') {
+			looking = 'f';
+			characterAngle -= 90;
+		}
+
+		else if (looking == 'r') {
+			looking = 'b';
+			characterAngle -= 90;
+		}
+
+		else if (looking == 'b') {
+			looking = 'l';
+			characterAngle -= 90;
+		}
+	}
+
+	if (characterAngle == 360 || characterAngle == -360) {
+		characterAngle = 0;
 	}
 	if (key == GLUT_KEY_DOWN) {
-		Eye.z++;
-		At.z++;
-
+		//Eye.z++;
+		//At.z++;
 	}
 	if (key == GLUT_KEY_UP) {
 		{
@@ -1046,7 +1305,7 @@ void main(int argc, char** argv)
 	glutKeyboardFunc(myKeyboard);
 
 	//glutMotionFunc(myMotion);
-	glutPassiveMotionFunc(mouseMove);
+	//glutPassiveMotionFunc(mouseMove);
 	//glutMouseFunc(myMouse);
 
 	//glutReshapeFunc(myReshape);
