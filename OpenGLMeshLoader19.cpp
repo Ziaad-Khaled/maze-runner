@@ -22,7 +22,8 @@ using namespace std;
 int WIDTH = 1280;
 int HEIGHT = 720;
 float deltaAngleX = 0;
-
+unsigned long int initTime;
+unsigned long int timeNow;
 GLuint tex;
 char title[] = "3D Model Loader Sample";
 
@@ -457,7 +458,7 @@ void drawMazes()
 	}
 
 }
-void displayScore() {
+void displayScoreAndTime() {
 	glDisable(GL_TEXTURE_2D);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -469,7 +470,7 @@ void displayScore() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	glColor3f(0.0f, 1.0f, 0.0f);//needs to be called before RasterPos
+	glColor3f(1.0f, 1.0f, 1.0f);//needs to be called before RasterPos
 	glRasterPos2i(2, 20);
 	std::string s = "  Score: " + std::to_string(score);
 	void* font = GLUT_BITMAP_TIMES_ROMAN_24;
@@ -486,6 +487,26 @@ void displayScore() {
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glColor3f(1, 1, 1);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, WIDTH, 0.0, HEIGHT);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glRasterPos2i(1, 50);
+	s = "  Timer: " + std::to_string(timeNow - initTime) + " seconds";
+	for (std::string::iterator i = s.begin(); i != s.end(); ++i)
+	{
+		char c = *i;
+		glutBitmapCharacter(font, c);
+	}
+
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
 	glEnable(GL_TEXTURE_2D);
 }
 //=======================================================================
@@ -572,9 +593,9 @@ void myDisplay(void)
 	model_character.Draw();
 	glPopMatrix();
 
-
-
-	displayScore();
+	timeNow = time(NULL);
+	//cout << timeNow;
+	displayScoreAndTime();
 
 	//glFlush();
 
@@ -1288,7 +1309,8 @@ void handlerFunc(int x, int y)
 void main(int argc, char** argv)
 
 {
-
+	initTime = time(NULL);
+	cout << initTime;
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
