@@ -770,7 +770,7 @@ void jump(void)
 		cout << "positionYMaze: ";
 		cout << positionYMaze;
 		cout << "\n";
-		if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>19 || positionYMaze >19)
+		if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>29 || positionYMaze >29)
 			position = 0;
 		else
 		{
@@ -1093,7 +1093,7 @@ void key(int key, int mx, int my) {
 					cout << "positionYMaze: ";
 					cout << positionYMaze;
 					cout << "\n";
-					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>19 || positionYMaze >15)
+					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>29 || positionYMaze >29)
 						position = 0;
 					else
 					{
@@ -1157,7 +1157,7 @@ void key(int key, int mx, int my) {
 					cout << "positionYMaze: ";
 					cout << positionYMaze;
 					cout << "\n";
-					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>19 || positionYMaze >15)
+					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>29 || positionYMaze >29)
 						position = 0;
 					else
 					{
@@ -1221,7 +1221,7 @@ void key(int key, int mx, int my) {
 					cout << "positionYMaze: ";
 					cout << positionYMaze;
 					cout << "\n";
-					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>19 || positionYMaze >15)
+					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>29 || positionYMaze >29)
 						position = 0;
 					else
 					{
@@ -1284,7 +1284,7 @@ void key(int key, int mx, int my) {
 					cout << "positionYMaze: ";
 					cout << positionYMaze;
 					cout << "\n";
-					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>19 || positionYMaze >15)
+					if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>29 || positionYMaze >29)
 						position = 0;
 					else
 					{
@@ -1378,7 +1378,7 @@ void key(int key, int mx, int my) {
 		cout << "positionYMaze: ";
 		cout << positionYMaze;
 		cout << "\n";
-		if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>19 || positionYMaze >15)
+		if (positionYMaze < 0 || positionXMaze < 0 || positionXMaze>29 || positionYMaze >29)
 			position = 0;
 		else
 		{
