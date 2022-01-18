@@ -171,6 +171,7 @@ GLTexture tex_coin;
 GLTexture tex_wall;
 GLTexture tex_rock;
 GLTexture tex_maze1_wall;
+GLTexture finishLine;
 
 
 //=======================================================================
@@ -428,11 +429,13 @@ void drawMazes()
 				{
 					glPushMatrix();
 					glTranslatef(j * 1 - 18+0.25, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 
 					glPushMatrix();
 					glTranslatef(j * 1 - 18-0.25, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 				}
@@ -440,11 +443,13 @@ void drawMazes()
 				{
 					glPushMatrix();
 					glTranslatef(j * 1 - 18 + 0.25, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 
 					glPushMatrix();
 					glTranslatef(j * 1 - 18 - 0.25, 0, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 				}
@@ -496,11 +501,13 @@ void drawMazes()
 				{
 					glPushMatrix();
 					glTranslatef(j * 1 - 18 + 0.25, -0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 
 					glPushMatrix();
 					glTranslatef(j * 1 - 18 - 0.25, -0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 				}
@@ -508,11 +515,13 @@ void drawMazes()
 				{
 					glPushMatrix();
 					glTranslatef(j * 1 - 18 + 0.25, -0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 
 					glPushMatrix();
 					glTranslatef(j * 1 - 18 - 0.25, -0.5, i * 1 - 18);
+					glBindTexture(GL_TEXTURE_2D, finishLine.texture[0]);
 					glutSolidCube(0.25);
 					glPopMatrix();
 				}
@@ -740,7 +749,6 @@ void myDisplay(void)
 	{
 		print("Level One", 600, 600, 1, 1, 1);
 		levelOneCounter++;
-		cout << "level One";
 		if (levelOneCounter > 100)
 			levelOneFlag = true;
 	}
@@ -748,7 +756,6 @@ void myDisplay(void)
 	{
 		print("Level Two", 600, 600, 1, 1, 1);
 		levelTwoCounter++;
-		cout << "level Two";
 		if (levelTwoCounter > 100)
 			levelTwoFlag = true;
 	}
@@ -1040,6 +1047,7 @@ void LoadAssets()
 	tex_wall.Load("Textures/wall.bmp");
 	tex_rock.Load("Textures/rock.bmp");
 	tex_maze1_wall.Load("Textures/wall1.bmp");
+	finishLine.Load("Textures/finishLine.bmp");
 }
 
 //=======================================================================
