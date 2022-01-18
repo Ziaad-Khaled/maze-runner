@@ -39,6 +39,8 @@ float characterAngle = 180;
 int score = 3;
 char looking = 'f'; //f,b,r,l
 bool gameOverFlag = false;
+bool youWonFlag = false;
+bool youWonSecondFlag = false;
 
 bool keyUp = false;
 bool keySpace = false;
@@ -634,7 +636,7 @@ void displayScoreAndTime() {
 //=======================================================================
 void myDisplay(void)
 {
-	if (gameOverFlag)
+	if (gameOverFlag || youWonSecondFlag)
 	{
 		gameOver();
 	}
@@ -724,6 +726,11 @@ void myDisplay(void)
 	{
 		print("Game Over", 600, 360, 1, 0, 0);
 		gameOverFlag = true;
+	}
+	if (youWonFlag)
+	{
+		print("You Won!", 600, 360, 0, 1, 0);
+		youWonSecondFlag = true;
 	}
 	//glFlush();
 
@@ -1466,6 +1473,10 @@ void key(int key, int mx, int my) {
 	if (position != 3)
 	{
 		iAmAtObstacle = false;
+	}
+	if (positionXMaze == 29 && positionYMaze == 13 && maze0 == false)
+	{
+		youWonFlag = true;
 	}
 
 	//glutPostRedisplay();
