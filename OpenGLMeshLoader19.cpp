@@ -38,6 +38,7 @@ bool iAmAtObstacle = false;
 float characterAngle = 180;
 int score = 3;
 char looking = 'f'; //f,b,r,l
+bool gameOverFlag = false;
 
 bool keyUp = false;
 bool keySpace = false;
@@ -215,7 +216,15 @@ void InitMaterial()
 	GLfloat shininess[] = { 96.0f };
 	glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
 }
-
+void gameOver(void)
+{
+	cout << "Iam gameOver";
+	//print("Game Over",640,360,1,0,0);
+	Sleep(5000);
+	cout << "Iam gameOver2";
+	glutDestroyWindow(1);
+	exit(0);
+}
 //=======================================================================
 // OpengGL Configuration Function
 //=======================================================================
@@ -537,6 +546,38 @@ void drawMazes()
 	}
 
 }
+void print(string print, int xOnScreen, int yOnScreen, float red, float green, float blue)
+{
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	//I like to use glm because glu is deprecated
+	//glm::mat4 orth= glm::ortho(0.0f, (float)win_width, 0.0f, (float)win_height);
+	//glMultMatrixf(&(orth[0][0]));
+	gluOrtho2D(0.0, WIDTH, 0.0, HEIGHT);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(red, green, blue);//needs to be called before RasterPos
+	glRasterPos2i(xOnScreen, yOnScreen);
+	std::string s = print;
+	void* font = GLUT_BITMAP_TIMES_ROMAN_24;
+
+	for (std::string::iterator i = s.begin(); i != s.end(); ++i)
+	{
+		char c = *i;
+		glutBitmapCharacter(font, c);
+	}
+
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glColor3f(1, 1, 1);
+	glEnable(GL_TEXTURE_2D);
+}
 void displayScoreAndTime() {
 	glDisable(GL_TEXTURE_2D);
 	glMatrixMode(GL_PROJECTION);
@@ -593,6 +634,10 @@ void displayScoreAndTime() {
 //=======================================================================
 void myDisplay(void)
 {
+	if (gameOverFlag)
+	{
+		gameOver();
+	}
 	Eye3rdPerson.x = Eye.x;
 	Eye3rdPerson.y = Eye.y + 0.5;
 	Eye3rdPerson.z = Eye.z + 1;        // (Eye.x, 
@@ -675,7 +720,11 @@ void myDisplay(void)
 	timeNow = time(NULL);
 	//cout << timeNow;
 	displayScoreAndTime();
-
+	if (score == 0)
+	{
+		print("Game Over", 600, 360, 1, 0, 0);
+		gameOverFlag = true;
+	}
 	//glFlush();
 
 	glutSwapBuffers();
@@ -706,6 +755,7 @@ void hitObstacle(void)
 	}
 	
 }
+
 
 void jump(void)
 {
