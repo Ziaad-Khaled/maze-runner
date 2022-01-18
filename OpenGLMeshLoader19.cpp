@@ -41,6 +41,10 @@ char looking = 'f'; //f,b,r,l
 bool gameOverFlag = false;
 bool youWonFlag = false;
 bool youWonSecondFlag = false;
+bool levelOneFlag = false;
+int levelOneCounter = 0;
+bool levelTwoFlag = true;
+int levelTwoCounter = 0;
 
 bool keyUp = false;
 bool keySpace = false;
@@ -731,6 +735,22 @@ void myDisplay(void)
 	{
 		print("You Won!", 600, 360, 0, 1, 0);
 		youWonSecondFlag = true;
+	}
+	if (!levelOneFlag)
+	{
+		print("Level One", 600, 600, 1, 1, 1);
+		levelOneCounter++;
+		cout << "level One";
+		if (levelOneCounter > 100)
+			levelOneFlag = true;
+	}
+	if (!levelTwoFlag)
+	{
+		print("Level Two", 600, 600, 1, 1, 1);
+		levelTwoCounter++;
+		cout << "level Two";
+		if (levelTwoCounter > 100)
+			levelTwoFlag = true;
 	}
 	//glFlush();
 
@@ -1429,6 +1449,7 @@ void key(int key, int mx, int my) {
 			characterAngle = 180;
 			
 			maze0 = false;
+			levelTwoFlag = false;
 		}
 	}
 	else
