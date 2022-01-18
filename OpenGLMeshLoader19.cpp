@@ -1631,13 +1631,63 @@ void handlerFunc(int x, int y)
 {
 	/* code to handle mouse position deltas */
 }
+void actM(int button, int state, int x, int y)//mouse function takes 4 parameters: button: which button has been clicked (GLUT_RIGHT_BUTTON or GLUT_LEFT_BUTTON),
+											//state wether the button is clicked or released (GLUT_UP or GLUT_DOWN)
+											// x and y are the position of the mouse cursor
+{
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)//if the left button has been clicked then translate the square to the mouse position
+	{
+		if (looking == 'f') {
+			looking = 'l';
+			characterAngle += 90;
+		}
+		else if (looking == 'r') {
+			looking = 'f';
+			characterAngle += 90;
+		}
 
+		else if (looking == 'l') {
+			looking = 'b';
+			characterAngle += 90;
+		}
+
+		else if (looking == 'b') {
+			looking = 'r';
+			characterAngle += 90;
+		}
+	}
+
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)//if the right button has been clicked, translate  the square to the origin (0,0)
+	{
+		if (looking == 'f') {
+			looking = 'r';
+			characterAngle -= 90;
+		}
+		else if (looking == 'l') {
+			looking = 'f';
+			characterAngle -= 90;
+		}
+
+		else if (looking == 'r') {
+			looking = 'b';
+			characterAngle -= 90;
+		}
+
+		else if (looking == 'b') {
+			looking = 'l';
+			characterAngle -= 90;
+		}
+	}
+
+	glutPostRedisplay();//redisplay to update the screen with the new paraeters
+}
 void main(int argc, char** argv)
 
 {
 	initTime = time(NULL);
 	cout << initTime;
 	glutInit(&argc, argv);
+	
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
@@ -1651,7 +1701,7 @@ void main(int argc, char** argv)
 	glutSpecialFunc(key);
 
 	glutKeyboardFunc(myKeyboard);
-
+	glutMouseFunc(actM);
 	//glutMotionFunc(myMotion);
 	//glutPassiveMotionFunc(mouseMove);
 	//glutMouseFunc(myMouse);
