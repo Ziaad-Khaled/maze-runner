@@ -17,7 +17,21 @@
 using namespace std;
 
 using namespace std;
+double r = 1;
+int rd = 1;
 
+double rw = 1;
+double rl = 1;
+
+bool w = true;
+
+
+bool s = true;
+
+
+//light0 offsets
+float xOffset = 0;
+float zOffset = 0;
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -177,30 +191,89 @@ GLTexture finishLine;
 //=======================================================================
 // Lighting Configuration Function
 //=======================================================================
+
+
 void InitLightSource()
 {
-	// Enable Lighting for this OpenGL Program
-	glEnable(GL_LIGHTING);
 
-	// Enable Light Source number 0
-	// OpengL has 8 light sources
-	glEnable(GL_LIGHT0);
+	GLfloat lmodel_ambient[] = { 0.1f, 0.1f, 0.01f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, lmodel_ambient);
+	GLfloat l0Diffuse[] ={0,0,0,1.0};
+	
+	if (maze0) {
+		l0Diffuse[0] = 0;
+		l0Diffuse[1] = 0;
+		l0Diffuse[2] = 1.0;
 
-	// Define Light source 0 ambient light
-	GLfloat ambient[] = { 0.1f, 0.1f, 0.1, 1.0f };
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	}
+	else {
+		l0Diffuse[0] = 1.0;
+		l0Diffuse[1] = 0;
+		l0Diffuse[2] = 0.0;
+		
+	}
+	GLfloat l0Spec[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat l0Ambient[] = { 0.0f, 0.0f, 0.1f, 0.0f };
+	GLfloat l0Position[] = { Eye.x+xOffset, Eye.y+8,Eye.z+zOffset , true };
+	GLfloat l0Direction[3] = {0,-1,0};
+	/*/if (looking == 'f') {
+		l0Direction[0] = 0;
+		l0Direction[1] = 0;
+		l0Direction[2] = -1;
 
-	// Define Light source 0 diffuse light
-	GLfloat diffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	}
+	else if (looking == 'r')
+	{
+		l0Direction[0] = 1;
+		l0Direction[1] = 0;
+		l0Direction[2] = 0;
+	}
+	else if (looking == 'l')
+	{
+		l0Direction[0] = -1;
+		l0Direction[1] = 0;
+		l0Direction[2] = 0;
+	}
+	else
+	{
+		l0Direction[0] = 0;
+		l0Direction[1] = 0;
+		l0Direction[2] = 1;
+	}
+	*/
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, l0Diffuse);
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, l0Ambient);
+	glLightfv(GL_LIGHT0, GL_POSITION, l0Position);
+	glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 90.0);
+	//glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0/1.6);
+	glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 128);
+	glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l0Direction);
 
-	// Define Light source 0 Specular light
-	GLfloat specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+	GLfloat l1Diffuse[] = { 0.3f, 0.3f, 0.0f, 1.0f };
+	GLfloat l1Ambient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	GLfloat l1Position[] = { 0, 3, 0, false};
+	GLfloat l1Direction[] = { 0.0, -1.0, 0 };
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, l1Diffuse);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, l1Ambient);
+	glLightfv(GL_LIGHT1, GL_POSITION, l1Position);
+	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
+	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 90.0);
+	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, l1Direction);
 
-	// Finally, define light source 0 position in World Space
-	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	GLfloat l2Diffuse[] = { 0.0f, 1.0f, 0.0f, 1.0f };
+	GLfloat l2Ambient[] = { 0.0f, 0.0f, 0.1f, 1.0f };
+	GLfloat l2Position[] = { -7.0f, 5.5f, 13.0f, true };
+	if (!maze0) {
+		l2Position[0] = -7.0;
+		l2Position[2] = 11;
+	}
+	GLfloat l2Direction[] = { 0.0, -1.0, 0.0 };
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, l2Diffuse);
+	//glLightfv(GL_LIGHT2, GL_AMBIENT, l2Ambient);
+	glLightfv(GL_LIGHT2, GL_POSITION, l2Position);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 90.0);
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 128);
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, l2Direction);
 }
 
 //=======================================================================
@@ -649,6 +722,7 @@ void displayScoreAndTime() {
 //=======================================================================
 void myDisplay(void)
 {
+	InitLightSource();
 	if (gameOverFlag || youWonSecondFlag)
 	{
 		gameOver();
@@ -677,13 +751,6 @@ void myDisplay(void)
 
 	myInit();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-	GLfloat lightIntensity[] = { 0.7, 0.7, 0.7, 1.0f };
-	GLfloat lightPosition[] = { 0.0f, 100.0f, 0.0f, 0.0f };
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, lightIntensity);
 
 	// Draw Ground
 	RenderGround();
@@ -763,6 +830,52 @@ void myDisplay(void)
 
 	glutSwapBuffers();
 }
+void PlayWithLight() {
+
+	for (int i = 0; i < 10; i++)
+	{
+
+		if (looking == 'f')
+		{
+			zOffset -= 0.4;
+		}
+		else if (looking == 'l')
+		{
+			xOffset -= 0.4;
+		}
+		else if (looking == 'r')
+		{
+			xOffset += 0.4;
+		}
+		else if (looking == 'b')
+		{
+			zOffset += 0.4;
+		}
+		myDisplay();
+	}
+	for (int i = 0; i < 10; i++)
+	{
+
+		if (looking == 'f')
+		{
+			zOffset += 0.4;
+		}
+		else if (looking == 'l')
+		{
+			xOffset += 0.4;
+		}
+		else if (looking == 'r')
+		{
+			xOffset -= 0.4;
+		}
+		else if (looking == 'b')
+		{
+			zOffset -= 0.4;
+		}
+		myDisplay();
+	}
+
+}
 void collectCoin(int positionXMaze, int positionYMaze, bool maze0)
 {
 	if (maze0)
@@ -774,6 +887,7 @@ void collectCoin(int positionXMaze, int positionYMaze, bool maze0)
 		maze2[positionXMaze][positionYMaze] = 0;
 	}
 	score++;
+	PlayWithLight();
 	PlaySound(TEXT("./Sound/coin.wav"), NULL, SND_ASYNC | SND_FILENAME);
 	myDisplay();
 }
@@ -885,6 +999,9 @@ void jump(void)
 	case 3:
 		if (CharacterPosition.y <= 0)
 			hitObstacle();
+		else {
+			PlayWithLight();
+		}
 		break;
 	default:
 		// code block
@@ -972,9 +1089,6 @@ void myMotion(int x, int y)
 		glTranslated(-Eye.x, -Eye.y, -Eye.z);
 	}
 
-	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
 	glutPostRedisplay();	//Re-draw scene 
 }
 
@@ -1061,6 +1175,8 @@ void Anim() {
 	At3rdPerson.x = At.x;
 	At3rdPerson.y = At.y - 4;
 	At3rdPerson.z = At.z;
+
+	
 
 	//habd start
 	if (firstPerson) {
@@ -1515,6 +1631,7 @@ void handlerFunc(int x, int y)
 {
 	/* code to handle mouse position deltas */
 }
+
 void main(int argc, char** argv)
 
 {
@@ -1547,6 +1664,8 @@ void main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_COLOR_MATERIAL);
 
