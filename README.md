@@ -1,6 +1,6 @@
 # Maze Runner
 
-This project is the final project for the course "DMET502: Advanced Computer Lab" at the German University in Cairo. The objective of the project is to implement a themed maze runner game where the player navigates through a maze, avoiding obstacles and collecting coins.
+The objective of the project is to implement a themed maze runner game where the player navigates through a maze, avoiding obstacles and collecting coins.
 
 
 ## Project Guidelines
